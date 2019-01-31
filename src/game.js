@@ -13,7 +13,6 @@ class Game {
     }
 
     this.sound = true;
-
     this.blocks = [];
     this.state = this.STATES.LOADING;
 
@@ -72,13 +71,20 @@ class Game {
       case this.STATES.PLAYING:
         this.addBlock();
         break;
-	  case this.STATES.ENDED:
-		
+      case this.STATES.ENDED:
+        this.blocks = [];
+        this.scoreContainer.innerHTML = '0';
+        this.addBlock();
+        this.clearState();
+        this.setState(this.STATES.READY);
+        break;
       default:
         console.log("I have lost track");
     }
   }
   addBlock() {
+    console.log(this.blocks.length);
+    
     let lastBlock = this.blocks[this.blocks.length - 1];
 
     if (lastBlock && this.blocks.length > 1) {
@@ -90,10 +96,8 @@ class Game {
       }
 
       if (lastBlock.dimension.width < 0 || lastBlock.dimension.depth < 0) {
-        //lastBlock.dimension.width = 0;
-        //lastBlock.dimension.depth = 0;
-        //lastBlock.resetBlock();
         this.setState(this.STATES.ENDED)
+        lastBlock.resetBlock();
         this.resetGame();
         return;
       }
@@ -133,19 +137,23 @@ class Game {
   }
 
   resetGame() {
-	var delay = 0.5;
-    this.blocks.map(b => {
-	  b.hideBlock(delay);
-	  delay += 0.5;
-	  this.stage.render();
-	});	
+    var delay = 0;
+    //
+    this.blocks.slice(0).reverse().map(b => {
+      delay += 0.2;
+      b.hideBlock(delay);
+      this.stage.render();
+    });
 
-	setInterval(()=>{
-		this.stage.render();
-	}, 10);
+    var id = setInterval(() => {
+      this.stage.render();
+    }, 10);
 
-	this.stage.setCamera(0);
-	
+    setTimeout(()=>{
+      clearInterval(id);
+    }, (delay*1000));
+
+    this.stage.setCamera(0, delay);
   }
 }
 

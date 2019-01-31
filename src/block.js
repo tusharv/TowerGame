@@ -73,8 +73,7 @@ class Block {
   hideBlock(delay){
     var Block = this; 
     //Block.mesh.scale.set(0,0,0);
-    TweenLite.to(Block.mesh.scale, delay, { x: 0, y: 0, z: 0 });
-    TweenLite.to(Block, delay, { opacity: 0});
+    TweenLite.to(Block.mesh.scale, delay, { x: 0, y: 0, z: 0 , ease: Power3.easeOut})
   }
 
   tick() {
